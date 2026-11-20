@@ -192,6 +192,12 @@ ul, ol, dl {
 	margin-bottom: 0.8em;
 }
 
+/* Align the "More" toggle with the list item text (ul default indent is 40px) */
+details > summary {
+	margin-left: 40px;
+	cursor: pointer;
+}
+
 dt {
 	margin-top: 0.5em;
 	margin-bottom: 0;

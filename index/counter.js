@@ -24,16 +24,24 @@
 	try {
 		cached = JSON.parse(localStorage.getItem(KEY));
 	} catch (e) {}
+	var lastValue = cached && cached.v ? cached.v : null;
 
-	// Same visit: show the stored number and keep the visit alive.
-	if (cached && cached.v && Date.now() - cached.t < VISIT_GAP) {
-		value.textContent = cached.v;
-		box.style.display = 'inline';
-		save(cached.v);
+	// Same visit: don't count again. Show the last known number (if we have
+	// one yet) and keep the visit alive.
+	if (cached && Date.now() - cached.t < VISIT_GAP) {
+		if (lastValue) {
+			value.textContent = lastValue;
+			box.style.display = 'inline';
+		}
+		save(lastValue);
 		return;
 	}
 
-	// New visit: let busuanzi count it, then remember the number it returns.
+	// New visit: mark it right away, so a page opened before busuanzi answers
+	// does not count the same visit again.
+	save(lastValue);
+
+	// Let busuanzi count it, then remember the number it returns.
 	new MutationObserver(function (_, observer) {
 		var v = value.textContent.trim();
 		if (v) {
